@@ -12,23 +12,11 @@ import java.time.Duration;
 public class DriverSetup {
     private static WebDriver driver;
 
-    public DriverSetup(WebDriver driver) {
-
-    }
+    private DriverSetup() {}
 
     public static WebDriver getDriver() {
         if (driver == null) {
-            String browser = System.getProperty("browser", "chrome");
-            driver = createDriver(browser);
-            driver.manage().window().maximize();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        }
-        return driver;
-    }
-
-    // Перевантаження з параметром (без зворотних викликів!)
-    public static WebDriver getDriver(String browser) {
-        if (driver == null) {
+            String browser = System.getProperty("browser", "chrome").toLowerCase();
             driver = createDriver(browser);
             driver.manage().window().maximize();
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -37,22 +25,28 @@ public class DriverSetup {
     }
 
     private static WebDriver createDriver(String browser) {
-        switch (browser.toLowerCase()) {
+        switch (browser) {
             case "firefox":
+                WebDriverManager.firefoxdriver().setup();
                 return new FirefoxDriver();
             case "edge":
+                WebDriverManager.edgedriver().setup();
                 return new EdgeDriver();
             case "chrome":
             default:
-                ChromeOptions opts = new ChromeOptions();
-                return new ChromeDriver(opts);
+                WebDriverManager.chromedriver().setup();
+                ChromeOptions options = new ChromeOptions();
+                return new ChromeDriver(options);
         }
     }
 
     public static void quitDriver() {
         if (driver != null) {
-            driver.quit();
-            driver = null;
+            try {
+                driver.quit();
+            } finally {
+                driver = null;
+            }
         }
     }
 }

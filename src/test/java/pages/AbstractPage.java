@@ -10,6 +10,7 @@ public abstract class AbstractPage<T extends AbstractPage<T>> {
     protected final WebDriverWait wait;
 
     protected abstract T openPage();
+
     protected AbstractPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
