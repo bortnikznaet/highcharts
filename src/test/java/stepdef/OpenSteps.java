@@ -5,6 +5,7 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import pages.ComboTimeline;
 
@@ -26,7 +27,7 @@ public class OpenSteps {
         comboTimeline = new ComboTimeline(driver);
     }
 
-    @And("Open the page")
+    @When("Open the page")
     public void openPage(){
         comboTimeline.openPage();
     }

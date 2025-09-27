@@ -34,9 +34,9 @@ public class ComboTimeline extends AbstractPage<ComboTimeline>{
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         boolean urlOk = wait.until(ExpectedConditions.urlContains("/demo/highcharts/combo-timeline"));
-
         boolean lastElementOk = lastElemetsBodyHtml.getAttribute("alt").equals("Cookiebot session tracker icon loaded");
+        boolean getTitle = driver.getTitle().contains("Combo Timeline");
 
-        return urlOk && lastElementOk;
+        return urlOk && lastElementOk && getTitle;
     }
 }

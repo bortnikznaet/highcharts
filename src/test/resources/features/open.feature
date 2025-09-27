@@ -1,6 +1,6 @@
-Feature: Open Combo Timeline
+Feature: View Combo Timeline
 
   @OPT1
-  Scenario: User opens page Combo Timeline
-    Given Open the page
+  Scenario: Open Combo Timeline page
+    When Open the page
     Then Verification that the page was opened
