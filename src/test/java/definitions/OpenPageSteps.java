@@ -1,20 +1,19 @@
-package stepdef;
+package definitions;
 
 import driver.DriverSetup;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
-import pages.ComboTimeline;
+import pages.ComboTimelinePage;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenSteps {
+public class OpenPageSteps {
 
     private WebDriver driver;
-    private ComboTimeline comboTimeline;
+    private ComboTimelinePage comboTimelinePage;
 
     @After
     public void afterScenario() {
@@ -24,16 +23,16 @@ public class OpenSteps {
     @Before
     public void init() {
         driver = DriverSetup.getDriver();
-        comboTimeline = new ComboTimeline(driver);
+        comboTimelinePage = new ComboTimelinePage(driver);
     }
 
     @When("Open the page")
     public void openPage(){
-        comboTimeline.openPage();
+        comboTimelinePage.open();
     }
 
     @Then("Verification that the page was opened")
     public void verificationThatThePageWasOpened() {
-        assertTrue(comboTimeline.isPageOpened());
+        assertTrue(comboTimelinePage.isPageComboLineOpened());
     }
 }

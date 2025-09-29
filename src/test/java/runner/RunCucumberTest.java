@@ -9,7 +9,7 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features/open.feature")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "stepdef")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "definitions")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty,summary")
 public class RunCucumberTest { }

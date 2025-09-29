@@ -92,7 +92,7 @@
                     <useModulePath>false</useModulePath>
                     <systemPropertyVariables>
                         <cucumber.features>src/test/resources/features</cucumber.features>
-                        <cucumber.glue>stepdef</cucumber.glue>
+                        <cucumber.glue>definitions</cucumber.glue>
                         <cucumber.plugin>pretty,summary</cucumber.plugin>
                     </systemPropertyVariables>
                 </configuration>
