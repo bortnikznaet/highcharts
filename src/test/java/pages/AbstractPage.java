@@ -15,11 +15,7 @@ public abstract class AbstractPage<T extends AbstractPage<T>> {
     }
     public T openPage(String url) {
         driver.get(url);
-        return self();
-    }
-
-    @SuppressWarnings("unchecked")
-    protected T self() {
         return (T) this;
     }
+
 }
