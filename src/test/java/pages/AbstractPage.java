@@ -13,9 +13,7 @@ public abstract class AbstractPage<T extends AbstractPage<T>> {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
-    public T openPage(String url) {
+    public void openPage(String url) {
         driver.get(url);
-        return (T) this;
     }
-
 }

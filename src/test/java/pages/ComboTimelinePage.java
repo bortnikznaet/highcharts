@@ -14,11 +14,12 @@ import java.time.Duration;
 import java.util.List;
 
 public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
-    private static final String COMBO_TIMELINE_URL = "https://www.highcharts.com/demo/combo-timeline";
-
     private static final By POINT_TRACKER = By.cssSelector("path.highcharts-point[role='img'][aria-label*='employees']");
     private static final By TOOL_TIP_TOP = By.cssSelector("#container svg .highcharts-tooltip text tspan:first-of-type");
     private static final By TOOL_TIP_BOTTOM = By.cssSelector("#container svg .highcharts-tooltip text tspan[style*='font-weight']");
+    private static final By TOOL_TIP_GROUP = By.cssSelector("g.highcharts-tooltip");
+
+    WebDriverWait w = new WebDriverWait(driver, Duration.ofSeconds(5));
 
     @FindBy(xpath = "//img[@id='CookiebotSessionPixel']")
     private WebElement lastElementBodyHtml;
@@ -29,15 +30,9 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
     @FindBy(xpath = "//*[@id='container']//*[contains(@class,'highcharts-legend')]//*[contains(@class,'highcharts-legend-item')][./*[name()='text' and normalize-space()='Revenue']]")
     private WebElement revenueLink;
 
-
-
     public ComboTimelinePage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
-    }
-
-    public ComboTimelinePage openPage() {
-        return openPage(COMBO_TIMELINE_URL);
     }
 
     public Boolean isPageComboLineOpened() {
@@ -54,20 +49,17 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
         btnAllowAllCookies.click();
     }
 
-    public void hideRevenue(){
+    public void hideRevenue() {
         activateDemoFrame();
         Actions actions = new Actions(driver);
         actions
                 .moveToElement(revenueLink)
-                .moveByOffset(2,2)
-                .pause(Duration.ofMillis(100))
+                .moveByOffset(2, 2)
                 .click(revenueLink)
                 .perform();
-
     }
 
     public void activateDemoFrame() {
-
         List<WebElement> iframes = driver.findElements(By.cssSelector("iframe"));
         if (!iframes.isEmpty()) {
             for (WebElement f : iframes) {
@@ -81,38 +73,49 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
         }
     }
 
-    public void hoverPointEmployees(int value) {
-        activateDemoFrame();
-        List<WebElement> point = driver.findElements(POINT_TRACKER);
-
+    public void prepareChart() {
         ((JavascriptExecutor) driver).executeScript(
-                "var f = document.querySelectorAll('#container svg g.highcharts-flags-series, " +
-                        "#container svg g.highcharts-flags-series *');" +
+                "var f = document.querySelectorAll('#container svg g.highcharts-flags-series, #container svg g.highcharts-flags-series *');" +
                         "f.forEach(n => n.setAttribute('data-prev-pe', n.style.pointerEvents||''));" +
                         "f.forEach(n => n.style.pointerEvents='none');"
         );
-        try {
-            Actions actions = new Actions(driver);
-            actions
-                    .moveToElement(point.get(value-1))
-                    .moveByOffset(1,-20)
-                    .pause(Duration.ofMillis(100))
-//                    .click(point.get(value-1))
-                    .perform();
-        }
-        finally {
-            ((JavascriptExecutor) driver).executeScript(
-                    "var f = document.querySelectorAll('#container svg g.highcharts-flags-series, " +
-                            "#container svg g.highcharts-flags-series *');" +
-                            "f.forEach(n => n.style.pointerEvents = n.getAttribute('data-prev-pe') || '');" +
-                            "f.forEach(n => n.removeAttribute('data-prev-pe'));"
-            );
-        }
-
     }
 
-    public Boolean checkDateTooltip(String date, String sumEmployees) {
-        return driver.findElement(TOOL_TIP_TOP).getText().contains(date)
-                && driver.findElement(TOOL_TIP_BOTTOM).getText().contains(sumEmployees + " employees");
+    public void restoreChart() {
+        ((JavascriptExecutor) driver).executeScript(
+                "var f = document.querySelectorAll('#container svg g.highcharts-flags-series, #container svg g.highcharts-flags-series *');" +
+                        "f.forEach(n => n.style.pointerEvents = n.getAttribute('data-prev-pe') || '');" +
+                        "f.forEach(n => n.removeAttribute('data-prev-pe'));"
+        );
+    }
+
+    public List<WebElement> sumEmployeesPoint() {
+        return driver.findElements(POINT_TRACKER);
+    }
+
+    public void hoverPointEmployees(int index) {
+        String js =
+                "var c=(Highcharts&&Highcharts.charts||[]).find(x=>x&&x.renderTo&&x.renderTo.id==='container');" +
+                        "if(!c) return 'NO_CHART';" +
+                        "var s=c.series.find(x=>x && x.name && x.name.toLowerCase().includes('employees')) || c.series[1];" +
+                        "if(!s) return 'NO_SERIES';" +
+                        "var p=s.points[" + index + "];" +
+                        "if(!p) return 'NO_POINT';" +
+                        "p.onMouseOver(); return 'OK';";
+
+        Object res = ((JavascriptExecutor) driver).executeScript(js);
+        if (!"OK".equals(res)) {
+            throw new IllegalStateException("Hover failed for index " + index + ": " + res);
+        }
+        w.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_GROUP));
+    }
+
+    public String getTooltipTop() {
+        return w.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_TOP)).getText();
+    }
+
+    public String getTooltipBottom() {
+        return w.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_BOTTOM)).getText();
     }
 }
+
