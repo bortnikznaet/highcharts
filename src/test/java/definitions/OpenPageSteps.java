@@ -21,7 +21,6 @@ public class OpenPageSteps {
     private ComboTimelinePage comboTimelinePage;
     private static final String COMBO_TIMELINE_URL = "https://www.highcharts.com/demo/combo-timeline";
 
-
     @After
     public void afterScenario() {
         DriverSetup.quitDriver();

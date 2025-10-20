@@ -19,8 +19,6 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
     private static final By TOOL_TIP_BOTTOM = By.cssSelector("#container svg .highcharts-tooltip text tspan[style*='font-weight']");
     private static final By TOOL_TIP_GROUP = By.cssSelector("g.highcharts-tooltip");
 
-    WebDriverWait w = new WebDriverWait(driver, Duration.ofSeconds(5));
-
     @FindBy(xpath = "//img[@id='CookiebotSessionPixel']")
     private WebElement lastElementBodyHtml;
 
@@ -51,6 +49,7 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
 
     public void hideRevenue() {
         activateDemoFrame();
+
         Actions actions = new Actions(driver);
         actions
                 .moveToElement(revenueLink)
@@ -60,17 +59,11 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
     }
 
     public void activateDemoFrame() {
-        List<WebElement> iframes = driver.findElements(By.cssSelector("iframe"));
-        if (!iframes.isEmpty()) {
-            for (WebElement f : iframes) {
-                driver.switchTo().frame(f);
-                if (!driver.findElements(By.cssSelector("#container svg")).isEmpty()) {
-                    break;
-                } else {
-                    driver.switchTo().defaultContent();
-                }
-            }
-        }
+        driver.switchTo().defaultContent();
+
+        By frame = By.cssSelector("iframe[src*='highcharts'][src*='combo-timeline']");
+        wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(frame));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#container svg")));
     }
 
     public void prepareChart() {
@@ -107,15 +100,15 @@ public class ComboTimelinePage extends AbstractPage<ComboTimelinePage> {
         if (!"OK".equals(res)) {
             throw new IllegalStateException("Hover failed for index " + index + ": " + res);
         }
-        w.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_GROUP));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_GROUP));
     }
 
     public String getTooltipTop() {
-        return w.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_TOP)).getText();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_TOP)).getText();
     }
 
     public String getTooltipBottom() {
-        return w.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_BOTTOM)).getText();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(TOOL_TIP_BOTTOM)).getText();
     }
 }
 

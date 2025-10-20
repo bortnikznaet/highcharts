@@ -12,14 +12,12 @@ import java.time.Duration;
 public class DriverSetup {
     private static WebDriver driver;
 
-    private DriverSetup() {}
-
     public static WebDriver getDriver() {
         if (driver == null) {
             String browser = System.getProperty("browser", "chrome").toLowerCase();
             driver = createDriver(browser);
             driver.manage().window().maximize();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
         }
         return driver;
     }

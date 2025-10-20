@@ -35,6 +35,4 @@ public class EmployeesPoint {
 
     public List<String> getDates()         { return dates; }
     public List<Integer> getEmpSum()       { return empSum; }
-
-
 }

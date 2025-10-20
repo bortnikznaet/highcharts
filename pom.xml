@@ -33,6 +33,28 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.epam.reportportal</groupId>
+            <artifactId>agent-java-cucumber7</artifactId>
+            <version>5.4.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.epam.reportportal</groupId>
+            <artifactId>logger-java-logback</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.19</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit-platform-engine</artifactId>
@@ -87,6 +109,19 @@
             <version>3.27.6</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -95,16 +130,63 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.5.4</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
                     <systemPropertyVariables>
                         <cucumber.features>src/test/resources/features</cucumber.features>
                         <cucumber.glue>definitions</cucumber.glue>
-                        <cucumber.plugin>pretty,summary</cucumber.plugin>
+                        <cucumber.plugin>pretty,summary,com.epam.reportportal.cucumber.ScenarioReporter</cucumber.plugin>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>basic</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <configuration>
+                            <includes>
+                                <include>**/ReportPortalTest.class</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>rerun</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.5.4</version>
+                        <configuration>
+                            <includes>
+                                <include>**/ReportPortalTest.class</include>
+                            </includes>
+                            <environmentVariables>
+                                <RP_RERUN>true</RP_RERUN>
+                                <!-- Expected title for the rerun to not fail the test -->
+                                <RP_EXPECTED_TITLE>Example Domain</RP_EXPECTED_TITLE>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
