@@ -17,3 +17,7 @@
 
 ### How to run
     mvn clean test -Dtest=RunCucumberTest -Dcucumber.filter.tags=@OPT2
+
+    mvn test -Dcucumber.filter.tags=@Smoke -Drp.attributes=component:ui;env:local;type:smoke
+
+    mvn test -Dcucumber.filter.tags=@Smoke -Drp.attributes=component:ui;env:local;type:regression
