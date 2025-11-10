@@ -20,4 +20,4 @@
 
     mvn test -Dcucumber.filter.tags=@Smoke -Drp.attributes=component:ui;env:local;type:smoke
 
-    mvn test -Dcucumber.filter.tags=@Smoke -Drp.attributes=component:ui;env:local;type:regression
+    mvn test -Dcucumber.filter.tags=@Regression -Drp.attributes=component:ui;env:local;type:regression
